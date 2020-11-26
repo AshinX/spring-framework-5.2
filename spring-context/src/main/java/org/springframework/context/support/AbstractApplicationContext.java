@@ -519,6 +519,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing.
+			/**
+			 * 1.做容器刷新前的准备工作
+			 *
+			 * 设置容器的启动时间
+			 * 设置活跃状态为true
+			 * 设置关闭状态为false
+			 * 获取environment对象，并加载当前系统属性值到environment对象中
+			 * 准备监听器和事件的集合对象，默认为空集合
+			 */
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
@@ -594,10 +603,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareRefresh() {
 		// Switch to active.
+		//设置容器启动时间
 		this.startupDate = System.currentTimeMillis();
+		//设置容器关闭标志位
 		this.closed.set(false);
+		//容器的激活标志位
 		this.active.set(true);
 
+		//记录日志
 		if (logger.isDebugEnabled()) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Refreshing " + this);
@@ -608,10 +621,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
+		//留给子类覆盖，初始化属性资源
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
+		//创建并获取环境变量，验证需要的属性文件是否都已经放入环境中
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...
