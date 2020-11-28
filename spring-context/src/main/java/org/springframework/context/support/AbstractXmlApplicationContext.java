@@ -80,17 +80,22 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	@Override
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
 		// Create a new XmlBeanDefinitionReader for the given BeanFactory.
+		//创建一个Xml的BeanDefinitionReader
 		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
 		// Configure the bean definition reader with this context's
 		// resource loading environment.
+		//给reader设置环境对象
 		beanDefinitionReader.setEnvironment(this.getEnvironment());
 		beanDefinitionReader.setResourceLoader(this);
 		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
 
 		// Allow a subclass to provide custom initialization of the reader,
 		// then proceed with actually loading the bean definitions.
+		//初始化beandefinitionreader对象，此处设置配置文件是否需要验证
+		// 适配器模式
 		initBeanDefinitionReader(beanDefinitionReader);
+		//开始完成beandefinition加载
 		loadBeanDefinitions(beanDefinitionReader);
 	}
 
@@ -119,11 +124,13 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * @see #getResourcePatternResolver
 	 */
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
+		//以resource的方式获得配置文件的资源位置
 		Resource[] configResources = getConfigResources();
 		if (configResources != null) {
 			reader.loadBeanDefinitions(configResources);
 		}
-		//configlocation就是加载xml文件的路径
+		//configlocation就是加载xml文件的路径（以string的形式获取配置文件的位置）
+		//设置的地方org.springframework.context.support.ClassPathXmlApplicationContext.ClassPathXmlApplicationContext(java.lang.String[], boolean, org.springframework.context.ApplicationContext)
 		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {
 			reader.loadBeanDefinitions(configLocations);

@@ -120,6 +120,11 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
 		//清空当前context中所有的bean和关闭beanfactory
+		/**
+		 * 为什么要销毁beanfactory？？？
+		 * 因为不同的xml所对应生产的beanfactory不一样，如果之前已经加载过一次xml文件，则会存在beanfacorty，如今加载另一份xml文件
+		 * 需要将之前的beanfactory销毁
+		 */
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
@@ -217,9 +222,11 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
+		//如果属性allowBeanDefinitionOverriding不为空，设置给beanfactory对象相应属性，是否允许覆盖同名称的不同定义的对象
 		if (this.allowBeanDefinitionOverriding != null) {
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}
+		//如果属性allowCircularReferences不为空，设置给beanfactory对象相应的属性，是否允许bean之前存在循环依赖。+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		if (this.allowCircularReferences != null) {
 			beanFactory.setAllowCircularReferences(this.allowCircularReferences);
 		}
