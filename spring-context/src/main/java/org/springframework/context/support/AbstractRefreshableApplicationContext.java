@@ -125,11 +125,13 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
-			//新建一个新的beanfactory
+			//新建一个新的DefaultListableBeanFactory对象
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			//指定beanfactory的序列化id，可以从id反序列化到beanfactory对象
 			beanFactory.setSerializationId(getId());
+			//定制beanfactory，设置相关属性，包括是否允许覆盖同名称的不同定义的对象以及循环依赖
 			customizeBeanFactory(beanFactory);
-			//加载beandefinitions，加载bean信息
+			//初始化documentreader，并进行xml文件读取及解析
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}
